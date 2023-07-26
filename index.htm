@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">    
+    <title>Coral Reef Map East Africa</title>
+    <link rel="stylesheet" href="http://js.arcgis.com/3.8/js/dojo/dijit/themes/claro/claro.css"/>
+    <link rel="stylesheet" href="http://js.arcgis.com/3.8/js/esri/css/esri.css" />
+    <link rel="stylesheet" href="css/layout.css"/>     
+	<link rel="shortcut icon" href="images/favicon.png">
+    <script src="http://js.arcgis.com/3.8/"></script>
+    <script>
+	  var map, scalebar, basemapGallery  ;
+	  var webmap;
+      var navToolbar;
+      var point;
+      
+      require(["dojo/parser", "dojo/ready", "dijit/layout/BorderContainer", "dijit/layout/ContentPane","dojo/dom", "esri/map", "esri/geometry/Extent", "esri/urlUtils", 
+        "esri/arcgis/utils",
+        "esri/dijit/Legend",
+        "esri/dijit/Scalebar",
+        "dojo/_base/connect",
+        "esri/TimeExtent", 
+        "esri/dijit/TimeSlider",                
+        "esri/dijit/BasemapGallery", 
+        "esri/geometry/Point",
+        "dijit/TitlePane",        
+        "dijit/TooltipDialog",         
+        "dojo/domReady!"
+      ], function(parser, ready, BorderContainer, ContentPane, dom, Map, Extent, urlUtils, arcgisUtils, Legend, Scalebar, connect, TimeExtent, TimeSlider, BasemapGallery, Point) {
+      	
+      	parser.parse();
+        map = new Map("map", {
+          basemap: "topo",          
+          center: [39.183, -3.560],
+          zoom: 7
+          
+        }); 
+        
+        map.on("load", function(){
+          //after map loads, connect to listen to mouse move & drag events
+          map.on("mouse-move", showCoordinates);
+          map.on("mouse-drag", showCoordinates);
+
+        });
+      
+
+      function showCoordinates(evt) {
+        console.log("show");
+        //get mapPoint from event
+        //The map is in web mercator - modify the map point to display the results in geographic
+        var mp = esri.geometry.webMercatorToGeographic(evt.mapPoint);
+        //display mouse coordinates
+        dojo.byId("info").innerHTML = mp.x.toFixed(3) + ", " + mp.y.toFixed(3);
+      }
+        
+        //add the wms layer for coral reef on the map
+        var coralReef = new esri.layers.ArcGISDynamicMapServiceLayer("http://maps.rcmrd.org:6080/arcgis/rest/services/AfricaContinent/Coral_Reef/MapServer");
+      	map.addLayers([ coralReef]);
+      	      	
+      	//add legend to the map
+      	var legend = new Legend({
+    		map:map
+  			}, "legendDiv");
+  		legend.startup();   
+  		
+  		//add the scalebar to the map
+  		
+  		
+  		
+        var scalebar = new Scalebar({
+    		map:map,
+    		scalebarUnit: "metric",
+    		attachTo: "bottom-left"
+  		});
+          
+          
+          
+        connect.connect(map,"onLayersAddResult",function(results){
+    	var timeSlider = new TimeSlider({},dom.byId("timeSliderDiv"));
+    	map.setTimeSlider(timeSlider);
+    	var timeExtent = new TimeExtent();
+        timeExtent.startTime = new Date("2/9/2010");
+        timeExtent.endTime = new Date("5/24/2010");
+        timeSlider.setThumbCount(2);
+        timeSlider.createTimeStopsByTimeInterval(timeExtent, 8, "esriTimeUnitsDays");
+        timeSlider.setThumbIndexes([0,1]);
+        timeSlider.setThumbMovingRate(1000);
+        timeSlider.setLoop(true);
+        
+    	timeSlider.startup(); 
+    	timeSlider.play();   	
+    	var labels = dojo.map(timeSlider.timeStops, function(timeStop,i){ 
+    		//alert(timeStop);
+    		//alert(timeStop.getDate()+"/"+timeStop.getMonth()+"/"+timeStop.getUTCFullYear());    		
+    		if(i%2==0){
+    			yr = timeStop.getUTCFullYear();
+    			mnth = timeStop.getMonth() +1;
+    			theDate=yr + "/" + mnth + "/" + timeStop.getDate()
+      		return theDate   
+      		}
+    		else{
+      		return "";
+    			}
+  			});   
+  			timeSlider.setLabels(labels);
+    	
+  		});  
+          
+      
+       
+       createBasemapGallery();
+       
+       function f() {  
+       	dojo.style(dojo.byId("preloader"), "display", "none");
+       
+       } setTimeout(f, 3000);
+
+       
+       ;     	
+      });
+      
+      function createBasemapGallery() {
+      	
+      	var World_Ocean_Base = new esri.dijit.BasemapLayer({ url:"http://server.arcgisonline.com/arcgis/rest/services/Ocean/World_Ocean_Base/MapServer"});
+      	var Shaded_Relief = new esri.dijit.BasemapLayer({ url:"http://server.arcgisonline.com/arcgis/rest/services/World_Shaded_Relief/MapServer"});
+      	var Topo_Map = new esri.dijit.BasemapLayer({ url:"http://services.arcgisonline.com/arcgis/rest/services/World_Topo_Map/MapServer"});
+      	var Imagery = new esri.dijit.BasemapLayer({ url:"http://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer"});
+      	var Street_Map = new esri.dijit.BasemapLayer({ url:"http://services.arcgisonline.com/arcgis/rest/services/World_Street_Map/MapServer"});
+      	var Terrain = new esri.dijit.BasemapLayer({ url:"http://services.arcgisonline.com/arcgis/rest/services/World_Terrain_Base/MapServer"});
+      	
+		
+		var World_Ocean_Base_basemap = new esri.dijit.Basemap({ layers:[World_Ocean_Base], title:"Ocean Map", thumbnailUrl:"images/ocean.png"
+		});
+		var Shaded_Relief_basemap = new esri.dijit.Basemap({ layers:[Shaded_Relief], title:"Shaded Relief Map", thumbnailUrl:"images/relief.png"
+		});
+		var Topo_basemap = new esri.dijit.Basemap({ layers:[Topo_Map], title:"Topo Map", thumbnailUrl:"images/topo.png"
+		});
+		var Imagery_basemap = new esri.dijit.Basemap({ layers:[Imagery], title:"Imagery Map", thumbnailUrl:"images/imagery.png"
+		});
+		var Street_basemap = new esri.dijit.Basemap({ layers:[Street_Map], title:"Street Map", thumbnailUrl:"images/street.png"
+		});
+		var Terrain_basemap = new esri.dijit.Basemap({ layers:[Terrain], title:"Terrain Map", thumbnailUrl:"images/terain.png"
+		});
+
+		
+        // Add the basemap gallery
+        basemapGallery = new esri.dijit.BasemapGallery({
+        showArcGISBasemaps:false,        	 
+        map:map}, "basemapGallery"); 
+        basemapGallery.add(World_Ocean_Base_basemap);
+        basemapGallery.add(Shaded_Relief_basemap);
+        basemapGallery.add(Topo_basemap);
+        basemapGallery.add(Imagery_basemap);
+        basemapGallery.add(Street_basemap);
+        basemapGallery.add(Terrain_basemap);
+        dojo.connect(basemapGallery, "onError", function(msg) {console.log(msg)});
+        //alert("done");
+      }
+      
+      function zoom2kenya(){
+          	map.centerAndZoom([41.364, -1.993],10);          
+		};		
+	  function zoom2Tz(){
+          	map.centerAndZoom([39.617, -7.648],10);          
+		};		
+	  function zoom2Som(){
+          	map.centerAndZoom([42.329, -0.633],10);          
+		};
+	  function zoom2ext(){
+          	map.centerAndZoom([39.183, -3.560],7);          
+		};
+
+    </script>
+  </head>
+
+  <body class="claro">
+  	<div id="preloader">
+  		<div id="prelder">Loading.....</div>
+	</div>
+    <div id="mainWindows" data-dojo-type="dijit/layout/BorderContainer" data-dojo-props="design:'headline'" style="width:100%; height:100%;">
+      <div id="header" class="shadow roundedCorners" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'top'">
+       <div id="pane1" >
+       	
+       </div> 
+        <div id="line-separator">       	
+       </div>    
+       <div id="pane2">
+       	<div id="pane2-a"> 
+       	<div id="navToolbar" data-dojo-type="dijit/Toolbar">
+	      <div data-dojo-type="dijit/form/Button" id="zmKenya" onclick="zoom2kenya();" data-dojo-props="iconClass:'zoomfullextIcon'">Kenya Corals</div>
+	      <div data-dojo-type="dijit/form/Button" id="zmSomalia" onclick="zoom2Som();"data-dojo-props="iconClass:'zoomfullextIcon'">Somalia Corals</div>
+	      <div data-dojo-type="dijit/form/Button" id="zmTz" onclick="zoom2Tz();"data-dojo-props="iconClass:'zoomfullextIcon'">Tanzania Corals</div>
+	      <div data-dojo-type="dijit/form/Button" id="zmExt" onclick="zoom2ext();"data-dojo-props="iconClass:'zoomfullextIcon'">Extents</div>	      
+    	</div>     	  	
+      	</div>          
+	  </div> 
+      </div>
+      <div id="map" class="roundedCorners shadow" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'center'">
+      	<span id="info" style="position:absolute; left:15px; bottom:5px; color:#000; z-index:50;"></span>
+      	<div style="position:absolute; right:15px; top:10px; z-Index:999; font:10px Arial, Helvetica, sans-serif;">
+          		<div data-dojo-type="dijit/TitlePane" data-dojo-props="title:'Basemap', closable:true,  open:false">
+            		<div data-dojo-type="dijit/layout/ContentPane" style="width:280px; height:310px; overflow:auto;">
+            		<div id="basemapGallery" ></div></div> 
+          		</div>          		
+        	</div> 
+        	
+      </div>
+      
+      <div id="rightPane" class="roundedCorners shadow" data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'right'" >
+        <div data-dojo-type="dijit/layout/AccordionContainer">
+      <div data-dojo-type="dijit/layout/ContentPane" id="legendPane" data-dojo-props="title:'Legend', selected:true">
+        <div id="legendDiv">        	
+        </div>        
+        <div id="legendDivimg" >        	
+        </div>
+      </div>
+      <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="title:''">
+       
+      </div>
+    </div>
+      </div>
+      <div data-dojo-type="dijit/layout/ContentPane" data-dojo-props="region:'bottom'" style=" height:7%;"> 	         			
+         	<div id="timeSliderDiv"></div> 
+      </div>
+    </div>
+  </body>
+</html>

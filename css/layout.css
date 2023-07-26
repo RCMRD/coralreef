@@ -1,0 +1,190 @@
+@import "http://js.arcgis.com/3.9/js/dojo/dijit/themes/claro/claro.css";
+
+
+html,body {
+  height:100%;
+  width:100%;
+  margin:0;
+  padding:0;
+}
+
+body {
+  background-color:#FFF;
+  overflow:hidden;
+  font-family:"Helvetica";
+}
+
+#prelder {
+	position: relative; 
+	background-repeat:no-repeat;
+	height: 206px;
+	width: 214;
+	top: 45%;
+	left:45%;
+	
+	
+	
+}
+
+#preloader {
+          background-color:#FFF;
+          position: absolute;
+		  left: 0px;
+		  top: 0px;
+		  width: 100%;
+		  height: 100%;		  
+		  z-index: 1000;
+           }
+#line-separator{
+	float:left;
+	height:64px;
+	width:1px;
+	background:#C0C0C0;
+	border-bottom:1px solid #B8B8B8;
+	
+	
+#line-separator2{	
+	height:1px;
+	background:#717171;
+	border-bottom:1px solid #313030;
+}
+	
+
+}
+
+#zoomers{
+  background-color:#C0C0C0;
+  border:solid 2px #B8B8B8;  
+}
+
+
+
+#bottomPanel {
+		float:none;
+        
+        margin: 0 auto;
+        margin: 0px 0px;
+        position: absolute; 
+        position: absolute;
+  		right:    0;
+  	    bottom:   0;
+      }
+
+      #timeInfo{
+        border-radius: 4px;
+        border: solid 2px #ccc;
+        background-color: #fff;
+        display: block;
+        padding: 5px;
+        position: relative;
+        text-align: center;
+        width: 700px;
+        z-index: 99;
+      }
+
+#navToolbar{
+  background-color:#E8E8E8;;
+  border:solid 0px #B8B8B8;  
+}
+#pane1{
+  float:left;
+  width:462px; 
+  height:65px;
+  background-image: url(../images/servir-coralreef.png);
+  border:solid 0px #A8A8A8;  
+  text-align:center;  
+  font:18px Arial, Helvetica, sans-serif;
+  font-weight:bold;
+}
+
+
+#legendDivimg{
+	width: 138px;
+	height: 90px;	
+	background-image: url(../images/blchnLegend.png);
+}
+
+#pane2{
+  float:right;
+  width:auto;
+  border:solid 0px #A8A8A8;
+  text-align:center;
+  background:#E8E8E8;
+  font:12px Arial, Helvetica, sans-serif;
+  margin: 0px 0px;
+  position: absolute;
+  right:    0;
+  bottom:   0;  
+
+}
+
+#header {
+  border:solid 1px #A8A8A8; 
+  background-color:#E8E8E8;   
+  height:64px;
+  margin: 0px 0px;
+  
+}
+
+.roundedCorners {
+  -o-border-radius:4px;
+  -moz-border-radius:4px;
+  -webkit-border-radius:4px;
+  border-radius:4px;
+}
+
+.shadow {
+  box-shadow:4px 4px 8px #adadad;
+  -webkit-box-shadow:4px 4px 8px #adadad;
+  -moz-box-shadow:4px 4px 8px #adadad;
+  -o-box-shadow:4px 4px 8px #adadad;
+}
+#title{
+  padding-top:2px;
+  padding-left:10px;
+  color:#000;
+  font-size:18pt;
+  text-align:left;
+  text-shadow: 0px 1px 0px #e5e5ee;
+  font-weight:700;
+}
+#subtitle {
+  font-size:small;
+  padding-left:40px;
+  text-shadow: 0px 1px 0px #e5e5ee;
+  color:#000;
+}
+#rightPane{
+  background-color:#E8E8E8;
+  border:solid 2px #B8B8B8;
+  font-size:10pt;
+  margin:2px; 
+  width:20%;
+}
+#map {
+  background-color:#FFF;
+  border:solid 2px #B8B8B8;
+  margin:2px;
+  padding:0;
+}
+
+#zoominIcon {
+        background-image: url(../images/nav_zoomin.png);
+        width: 16px;
+        height: 16px;
+        font-size: smaller;
+        font-family: "Arial Narrow";
+      }
+
+      #zoomoutIcon {
+        background-image: url(../images/nav_zoomout.png);
+        width: 16px;
+        height: 16px;
+      }
+
+      #zoomfullextIcon {
+        background-image: url(../images/nav_fullextent.png);
+        width: 16px;
+        height: 16px;
+      }
+
